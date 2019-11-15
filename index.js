@@ -14,7 +14,9 @@ app.use(cors());
 app.use(express.json());
 // api routes
 const fooRoutes = require("./routes/foo");
+const productRoutes = require("./routes/products");
 app.use("/api/foo", fooRoutes);
+app.use("/api/products", productRoutes);
 
 // Error Handler
 app.use(function(req, res, next) {

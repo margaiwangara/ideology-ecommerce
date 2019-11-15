@@ -35,7 +35,11 @@ exports.updateFoo = async (req, res, next) => {
   try {
     const updatedFoo = await db.Foo.findOneAndUpdate(
       { _id: req.params.id },
-      req.body
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
     );
 
     return res.status(200).json(updatedFoo);
@@ -47,6 +51,7 @@ exports.updateFoo = async (req, res, next) => {
 exports.deleteFoo = async (req, res, next) => {
   try {
     await db.Foo.findByIdAndDelete(req.params.id);
+
     return res.status(200).json({
       success: true
     });
