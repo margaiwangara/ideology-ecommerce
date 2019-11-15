@@ -5,8 +5,6 @@ const dotenv = require("dotenv");
 // dotenv file loc
 dotenv.config({ path: `${__dirname}/../config/config.env` });
 
-// set debug to true to display db responses
-mongoose.set("debug", true);
 // enable promises for mongoose
 mongoose.Promise = Promise;
 
@@ -31,7 +29,7 @@ const seedProductsCollection = async () => {
     });
     await Products.create(JSON.parse(data));
 
-    console.log("Data seeding complete");
+    console.log("Products collection seeded successfully");
   } catch (error) {
     console.log(error);
   }
@@ -41,7 +39,7 @@ const deleteProductsFromCollection = async () => {
   try {
     await Products.deleteMany();
 
-    console.log("Deleted all product records");
+    console.log("All product records deleted successfully");
   } catch (error) {
     console.log(error);
   }

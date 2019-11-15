@@ -40,7 +40,10 @@ productSchema.pre("validate", function(next) {
 });
 
 productSchema.pre("save", function(next) {
-  this.slug = slugify(this.name, { lower: true });
+  let name = this.name;
+  name = name.replace(/[;\/:*?""<>|&.,']/g, "");
+
+  this.slug = slugify(name, { lower: true });
   next();
 });
 
