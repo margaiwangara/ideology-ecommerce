@@ -3,7 +3,8 @@ const ErrorResponse = require("../utils/ErrorResponse");
 function errorHandler(error, request, response, next) {
   let err = { ...error };
   let message;
-  // console.log(err);
+
+  console.log(err);
 
   switch (err.name) {
     case "CastError":

@@ -82,7 +82,7 @@ exports.updateProduct = async (req, res, next) => {
  */
 exports.deleteProduct = async (req, res, next) => {
   try {
-    await db.Products.findByIdAndDelete(req.id);
+    await db.Products.findByIdAndDelete(req.params.id);
 
     return res.status(200).json({
       success: true
