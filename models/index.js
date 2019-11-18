@@ -18,3 +18,4 @@ mongoose
 
 module.exports.Foo = require("./foo"); // test collection
 module.exports.Products = require("./product");
+module.exports.Category = require("./category");
