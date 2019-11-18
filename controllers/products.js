@@ -3,12 +3,12 @@ const ErrorResponse = require("../utils/ErrorResponse");
 
 /**
  * @desc    Get All Products
- * @route   /api/products
+ * @route   GET /api/products
  * @access  Public
  */
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await db.Products.find({});
+    const products = await db.Product.find({}).populate("categories");
 
     return res.status(200).json({
       success: true,
@@ -27,7 +27,7 @@ exports.getProducts = async (req, res, next) => {
  */
 exports.getProduct = async (req, res, next) => {
   try {
-    const product = await db.Products.findById(req.params.id);
+    const product = await db.Product.findById(req.params.id);
     // if product exists
     if (!product) {
       next(new ErrorResponse(`Resource Not Found`, 404));
@@ -46,7 +46,7 @@ exports.getProduct = async (req, res, next) => {
  */
 exports.createProduct = async (req, res, next) => {
   try {
-    const newProduct = await db.Products.create(req.body);
+    const newProduct = await db.Product.create(req.body);
 
     return res.status(201).json(newProduct);
   } catch (error) {
@@ -61,7 +61,7 @@ exports.createProduct = async (req, res, next) => {
  */
 exports.updateProduct = async (req, res, next) => {
   try {
-    const updatedProduct = await db.Products.findOneAndUpdate(
+    const updatedProduct = await db.Product.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
       {
@@ -82,7 +82,7 @@ exports.updateProduct = async (req, res, next) => {
  */
 exports.deleteProduct = async (req, res, next) => {
   try {
-    await db.Products.findByIdAndDelete(req.params.id);
+    await db.Product.findByIdAndDelete(req.params.id);
 
     return res.status(200).json({
       success: true

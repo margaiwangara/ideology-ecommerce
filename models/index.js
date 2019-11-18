@@ -17,5 +17,5 @@ mongoose
   .catch(error => console.log(error));
 
 module.exports.Foo = require("./foo"); // test collection
-module.exports.Products = require("./product");
+module.exports.Product = require("./product");
 module.exports.Category = require("./category");

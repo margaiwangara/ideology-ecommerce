@@ -15,8 +15,10 @@ app.use(express.json());
 // api routes
 const fooRoutes = require("./routes/foo");
 const productRoutes = require("./routes/products");
+const categoryRoutes = require("./routes/categories");
 app.use("/api/foo", fooRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Error Handler
 app.use(function(req, res, next) {

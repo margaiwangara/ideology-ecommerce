@@ -26,7 +26,14 @@ const productSchema = new mongoose.Schema(
       maxlength: 500,
       required: true,
       trim: true
-    }
+    },
+    categories: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "categories",
+        required: true
+      }
+    ]
   },
   {
     timestamps: true
