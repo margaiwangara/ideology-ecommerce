@@ -1,6 +1,7 @@
 const fs = require("fs");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const colors = require("colors");
 
 // dotenv file loc
 dotenv.config({ path: `${__dirname}/../config/config.env` });
@@ -21,15 +22,18 @@ mongoose
 
 // Collections
 const Products = require("../models/product");
+const Categories = require("../models/category");
 
 const seedProductsCollection = async () => {
   try {
     const data = fs.readFileSync(`${__dirname}/../_data/products.json`, {
       encoding: "utf-8"
     });
+    await Categories.create();
     await Products.create(JSON.parse(data));
 
-    console.log("Products collection seeded successfully");
+    console.log("Products collection seeded successfully".green.inverse);
+    process.exit();
   } catch (error) {
     console.log(error);
   }
@@ -38,8 +42,9 @@ const seedProductsCollection = async () => {
 const deleteProductsFromCollection = async () => {
   try {
     await Products.deleteMany();
-
-    console.log("All product records deleted successfully");
+    await Categories.deleteMany();
+    console.log("All records deleted successfully".green.inverse);
+    process.exit();
   } catch (error) {
     console.log(error);
   }
