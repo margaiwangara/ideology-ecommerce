@@ -9,7 +9,14 @@ const categorySchema = mongoose.Schema(
     }
   },
   {
-    toJSON: { virtuals: true },
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+      }
+    },
     toObject: { virtuals: true }
   }
 );

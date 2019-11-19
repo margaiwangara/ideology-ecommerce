@@ -32,7 +32,10 @@ exports.getProducts = async (req, res, next) => {
     // handling filters
     //filter=color:red,green;size:s,xs; displays products that have red and green color and also s and xs size
     // run query
-    query = db.Product.find(JSON.parse(queryStr));
+    query = db.Product.find(JSON.parse(queryStr)).populate({
+      path: "categories",
+      select: "name id"
+    });
 
     // check if select exists and select input fields
     if (req.query.select) {
@@ -65,10 +68,7 @@ exports.getProducts = async (req, res, next) => {
     query = query.skip(startIndex).limit(limit);
 
     // get all products
-    const products = await query.populate({
-      path: "categories",
-      select: "name"
-    });
+    const products = await query;
 
     // pagination
     const pagination = {};
