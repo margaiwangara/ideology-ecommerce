@@ -63,7 +63,7 @@ const productSchema = new mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "Categories",
-        required: true
+        required: [true, "Category id required"]
       }
     ]
   },

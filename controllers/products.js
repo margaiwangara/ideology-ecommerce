@@ -10,7 +10,16 @@ exports.getProducts = async (req, res, next) => {
   try {
     let query;
 
-    let queryStr = JSON.stringify(req.query);
+    // make copy of req.query
+    const reqQuery = { ...req.query };
+
+    // Fields to exclude
+    const removeFields = ["select", "filter"];
+
+    // loop over remove fields and delete from reqQuery
+    removeFields.forEach(param => delete reqQuery[param]);
+
+    let queryStr = JSON.stringify(reqQuery);
 
     // price handling
     queryStr = queryStr.replace(
@@ -25,7 +34,19 @@ exports.getProducts = async (req, res, next) => {
     // run query
     query = db.Product.find(JSON.parse(queryStr));
 
-    const products = await query.populate("categories");
+    // check if select exists and select input fields
+    if (req.query.select) {
+      const fields = req.query.select.split(",").join(" ");
+      query = query.select(fields);
+    }
+
+    // check if filter exists
+
+    // get all products
+    const products = await query.populate({
+      path: "categories",
+      select: "name"
+    });
 
     return res.status(200).json({
       success: true,

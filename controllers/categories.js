@@ -15,7 +15,7 @@ exports.getCategories = async (req, res, next) => {
     } else {
       query = db.Category.find({}).populate({
         path: "products",
-        select: "_id name description -categories"
+        select: "name description"
       });
     }
 
