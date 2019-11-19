@@ -14,7 +14,7 @@ exports.getProducts = async (req, res, next) => {
     const reqQuery = { ...req.query };
 
     // Fields to exclude
-    const removeFields = ["select", "filter"];
+    const removeFields = ["select", "filter", "sort"];
 
     // loop over remove fields and delete from reqQuery
     removeFields.forEach(param => delete reqQuery[param]);
@@ -40,7 +40,13 @@ exports.getProducts = async (req, res, next) => {
       query = query.select(fields);
     }
 
-    // check if filter exists
+    // products sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
 
     // get all products
     const products = await query.populate({
