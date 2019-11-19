@@ -4,6 +4,6 @@ This is a sample e-commerce REST API written in Node.js utilizing my [Node.js RE
 
 <!-- Probable filters for products -->
 
-filterby: size, color, seller, rating, price
+filterby: size, color, seller, price
 queries: rating
 sort: asc, desc based on price, highly rated, latest posted, most sold

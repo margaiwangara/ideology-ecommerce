@@ -4,34 +4,89 @@
     "categories": ["5dd3a3aa92b85328147eb63c"],
     "description": "Nike Dry Victory Women Golf Shirt provides the comfortable feel of double-knit fabric and the sweat-wicking power of Dri-FIT technology to help you stay dry",
     "name": "Nike Women Dry Victory Solid Polo Golf Shirt",
-    "price": 99.95
+    "price": 99.95,
+    "averageRating": 4.2,
+    "attributes": [
+      {
+        "color": "red",
+        "size": {
+          "short": "s",
+          "long": "small"
+        },
+        "quantity": 15
+      }
+    ]
   },
   {
     "_id": "5dd3af433819b541e8c49477",
     "categories": ["5dd3a3aa92b85328147eb63c"],
     "description": "100% Cotton. Imported. Rib mock neck sweatshirt. Half zip closure with leather pull tab. Embroidered signature pony on left chest. Long sleeves with rib cuffs. Vented hem",
     "name": "Polo Ralph Lauren Women Half-Zip Pima Cotton Sweater",
-    "price": 151.12
+    "price": 151.12,
+    "averageRating": 4.5,
+    "attributes": [
+      {
+        "color": "blue",
+        "size": {
+          "short": "l",
+          "long": "large"
+        },
+        "quantity": 5
+      }
+    ]
   },
   {
     "_id": "5dd3af433819b541e8c49478",
     "categories": ["5dd3a3aa92b85328147eb63c"],
     "description": "For most accurate fit, we recommend checking detailed measurement before purchase. If you are stronger and taller than other one, please choose a bigger size than you usually wear",
     "name": "Women Short Sleeve Moisture Wicking Performance Golf Polo Shirt, Side Blocked, Tall Sizes: M-7XL",
-    "price": 19.99
+    "price": 19.99,
+    "averageRating": 1.2,
+    "attributes": [
+      {
+        "color": "pink",
+        "size": {
+          "short": "xl",
+          "long": "xtra large"
+        },
+        "quantity": 30
+      }
+    ]
   },
   {
     "_id": "5dd3af433819b541e8c49479",
     "categories": ["5dd3a3aa92b85328147eb63c"],
     "description": "Quick Dry & Breathable Material --- High moisture wicking feature keeps your skin stay cool quickly after sweaty sport activities in hot summer",
     "name": "Derminpro Men?s Polo Shirts Short/Long Sleeve Quick Dry Athletic Golf T-Shirts",
-    "price": 23.99
+    "price": 23.99,
+    "averageRating": 4.1,
+    "attributes": [
+      {
+        "color": "yellow",
+        "size": {
+          "short": "s",
+          "long": "small"
+        },
+        "quantity": 10
+      }
+    ]
   },
   {
     "_id": "5dd3af433819b541e8c4947a",
     "categories": ["5dd3a3aa92b85328147eb63c"],
     "description": "62% Cotton, 38% Polyester. Imported. Pull On closure. Machine Wash. Polo collar with a sporty buttoned placket; vented hem for extra mobility. Short sleeve",
     "name": "Nautica Women Classic Fit Short Sleeve Solid Soft Cotton Polo Shirt",
-    "price": 63.1
+    "price": 63.1,
+    "averageRating": 4.2,
+    "attributes": [
+      {
+        "color": "grey",
+        "size": {
+          "short": "m",
+          "long": "medium"
+        },
+        "quantity": 35
+      }
+    ]
   }
 ]

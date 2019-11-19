@@ -8,7 +8,24 @@ const ErrorResponse = require("../utils/ErrorResponse");
  */
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await db.Product.find({}).populate("categories");
+    let query;
+
+    let queryStr = JSON.stringify(req.query);
+
+    // price handling
+    queryStr = queryStr.replace(
+      /\b(gt|lt|gte|lte|in)\b/g,
+      match => `$${match}`
+    );
+    // replace rating to average rating
+    queryStr = queryStr.replace("rating", "averageRating");
+
+    // handling filters
+    //filter=color:red,green;size:s,xs; displays products that have red and green color and also s and xs size
+    // run query
+    query = db.Product.find(JSON.parse(queryStr));
+
+    const products = await query.populate("categories");
 
     return res.status(200).json({
       success: true,

@@ -43,8 +43,14 @@ const productSchema = new mongoose.Schema(
           required: [true, "Color field is required"]
         },
         size: {
-          type: String,
-          required: [true, "Size field is required"]
+          short: {
+            type: String,
+            required: [true, "Size.short field is required"]
+          },
+          long: {
+            type: String,
+            required: [true, "Size.long field is required"]
+          }
         },
         quantity: {
           type: Number,
