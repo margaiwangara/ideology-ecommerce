@@ -11,9 +11,13 @@ const {
   uploadProductImage
 } = require("../controllers/products");
 
+// middleware files
+const Product = require("../models/product");
+const advancedResults = require("../middleware/advancedResults");
+
 router
   .route("/")
-  .get(getProducts)
+  .get(advancedResults(Product, "categories"), getProducts)
   .post(createProduct);
 
 router

@@ -9,23 +9,7 @@ const ErrorResponse = require("../utils/ErrorResponse");
  */
 exports.getCategories = async (req, res, next) => {
   try {
-    let query;
-    if (req.params.productId) {
-      query = db.Category.find({ products: req.params.productId });
-    } else {
-      query = db.Category.find({}).populate({
-        path: "products",
-        select: "name description"
-      });
-    }
-
-    const categories = await query;
-
-    return res.status(200).json({
-      success: true,
-      count: categories.length,
-      data: categories
-    });
+    return res.status(200).json(res.advancedResults);
   } catch (error) {
     next(error);
   }
