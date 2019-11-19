@@ -14,7 +14,7 @@ exports.getProducts = async (req, res, next) => {
     const reqQuery = { ...req.query };
 
     // Fields to exclude
-    const removeFields = ["select", "filter", "sort"];
+    const removeFields = ["select", "filter", "sort", "page", "limit"];
 
     // loop over remove fields and delete from reqQuery
     removeFields.forEach(param => delete reqQuery[param]);
@@ -48,16 +48,50 @@ exports.getProducts = async (req, res, next) => {
       query = query.sort("-createdAt");
     }
 
+    // product filtering
+    if (req.query.filter) {
+      // initial split color:red,green;size:s,xs;
+      const firstSplit = req.query.filter.split(";");
+    }
+
+    // pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 2;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await db.Product.countDocuments();
+
+    // pagination query
+    query = query.skip(startIndex).limit(limit);
+
     // get all products
     const products = await query.populate({
       path: "categories",
       select: "name"
     });
 
+    // pagination
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit
+      };
+    }
+
     return res.status(200).json({
       success: true,
       count: products.length,
-      data: products
+      data: products,
+      pagination
     });
   } catch (error) {
     next(error);
