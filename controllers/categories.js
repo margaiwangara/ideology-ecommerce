@@ -40,8 +40,8 @@ exports.getCategory = async (req, res, next) => {
   try {
     const category = await db.Category.findById(req.params.id);
     // if Category exists
-    if (!category) {
-      next(new ErrorResponse(`Resource Not Found`, 404));
+    if (category === null) {
+      return next(new ErrorResponse(`Resource Not Found`, 404));
     }
 
     return res.status(200).json(category);

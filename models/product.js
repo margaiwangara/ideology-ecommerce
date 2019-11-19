@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
     mainImage: {
       type: String,
       default: "no-image.jpg",
-      maxlength: [255, "Maximum name length[255] exceeded"]
+      maxlength: [255, "Maximum name length[25  5] exceeded"]
     },
     averageRating: {
       type: Number,
