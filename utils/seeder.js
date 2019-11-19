@@ -26,13 +26,20 @@ const Categories = require("../models/category");
 
 const seedProductsCollection = async () => {
   try {
-    const data = fs.readFileSync(`${__dirname}/../_data/products.json`, {
+    const productData = fs.readFileSync(`${__dirname}/../_data/products.json`, {
       encoding: "utf-8"
     });
-    await Categories.create();
-    await Products.create(JSON.parse(data));
+    const categoryData = fs.readFileSync(
+      `${__dirname}/../_data/categories.json`,
+      {
+        encoding: "utf-8"
+      }
+    );
+    console.log(`Categories: ${categoryData}`);
+    await Categories.create(JSON.parse(categoryData));
+    await Products.create(JSON.parse(productData));
 
-    console.log("Products collection seeded successfully".green.inverse);
+    console.log("Resource seeded successfully".green.inverse);
     process.exit();
   } catch (error) {
     console.log(error);

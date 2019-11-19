@@ -13,7 +13,10 @@ exports.getCategories = async (req, res, next) => {
     if (req.params.productId) {
       query = db.Category.find({ products: req.params.productId });
     } else {
-      query = db.Category.find({});
+      query = db.Category.find({}).populate({
+        path: "products",
+        select: "_id name description -categories"
+      });
     }
 
     const categories = await query;
