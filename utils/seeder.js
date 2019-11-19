@@ -35,7 +35,6 @@ const seedProductsCollection = async () => {
         encoding: "utf-8"
       }
     );
-    console.log(`Categories: ${categoryData}`);
     await Categories.create(JSON.parse(categoryData));
     await Products.create(JSON.parse(productData));
 
