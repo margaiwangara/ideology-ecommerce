@@ -4,8 +4,6 @@ function errorHandler(error, request, response, next) {
   let err = { ...error };
   let message;
 
-  console.log(err);
-
   switch (err.name) {
     case "CastError":
       message = "Resource Not Found";
@@ -14,6 +12,7 @@ function errorHandler(error, request, response, next) {
     case "ValidationError":
       message = Object.values(err.errors).map(val => val.message);
       err = new ErrorResponse(message, 400);
+      break;
     default:
       break;
   }
@@ -23,6 +22,8 @@ function errorHandler(error, request, response, next) {
     message = "Duplicate Field Value Entered";
     err = new ErrorResponse(message, 400);
   }
+
+  console.log(err);
 
   return response.status(err.status || 500).json({
     error: {
