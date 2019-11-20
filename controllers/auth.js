@@ -15,10 +15,8 @@ exports.registerUser = async (req, res, next) => {
       ...req.body
     });
 
-    // acquired token
-    const token = user.generateJSONWebToken();
-
-    return res.status(201).json({ success: true, token });
+    // token response method
+    getTokenResponse(user, 201, res);
   } catch (error) {
     next(error);
   }
@@ -49,10 +47,33 @@ exports.loginUser = async (req, res, next) => {
       return next(new ErrorResponse(message, 401));
     }
 
-    const token = user.generateJSONWebToken();
-
-    return res.status(200).json({ success: true, token });
+    // token response method
+    getTokenResponse(user, 200, res);
   } catch (error) {
     next(error);
   }
+};
+
+// Get JWT and store in cookie
+const getTokenResponse = (user, statusCode, res) => {
+  // token
+  const token = user.generateJSONWebToken();
+
+  // cookie options
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true
+  };
+
+  // secure in production env
+  if (process.env.NODE_ENV == "production") {
+    options.secure = true;
+  }
+
+  return res
+    .status(statusCode)
+    .cookie("token", token, options)
+    .json({ success: true, token });
 };

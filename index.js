@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const colors = require("colors");
 const fileupload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 
 // load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -21,6 +22,7 @@ const authRoutes = require("./routes/auth");
 app.use(cors());
 app.use(express.json());
 app.use(fileupload());
+app.use(cookieParser());
 
 // static files
 app.use(express.static(path.join(__dirname, "public")));
