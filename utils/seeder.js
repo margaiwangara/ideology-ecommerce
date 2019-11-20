@@ -23,20 +23,30 @@ mongoose
 // Collections
 const Products = require("../models/product");
 const Categories = require("../models/category");
+const Users = require("../models/users");
 
 const seedProductsCollection = async () => {
   try {
-    const productData = fs.readFileSync(`${__dirname}/../_data/products.json`, {
+    // file routes
+    let productFile = `${__dirname}/../_data/products.json`,
+      categoryFile = `${__dirname}/../_data/categories.json`,
+      userFile = `${__dirname}/../_data/users.json`;
+
+    //  data acquisition
+    const productData = fs.readFileSync(productFile, {
       encoding: "utf-8"
     });
-    const categoryData = fs.readFileSync(
-      `${__dirname}/../_data/categories.json`,
-      {
-        encoding: "utf-8"
-      }
-    );
+    const categoryData = fs.readFileSync(categoryFile, {
+      encoding: "utf-8"
+    });
+    const userData = fs.readFileSync(userFile, {
+      encoding: "utf-8"
+    });
+
+    // Database input
     await Categories.create(JSON.parse(categoryData));
     await Products.create(JSON.parse(productData));
+    await Users.create(JSON.parse(userData));
 
     console.log("Resource seeded successfully".green.inverse);
     process.exit();
@@ -47,8 +57,11 @@ const seedProductsCollection = async () => {
 
 const deleteProductsFromCollection = async () => {
   try {
+    //deletion from database
     await Products.deleteMany();
     await Categories.deleteMany();
+    await Users.deleteMany();
+
     console.log("All records deleted successfully".green.inverse);
     process.exit();
   } catch (error) {

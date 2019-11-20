@@ -1,0 +1,57 @@
+[
+  {
+    "name": "John",
+    "surname": "Doe",
+    "email": "johndoe@app.com",
+    "password": "JohnDoe1",
+    "address": [
+      "777 Brockton Avenue, Abington MA 2351",
+      "55 Brooksby Village Way, Danvers MA 1923"
+    ],
+    "role": "user"
+  },
+  {
+    "name": "Jane",
+    "surname": "Doe",
+    "email": "janedoe@app.com",
+    "password": "JaneDoe1",
+    "address": [
+      "137 Teaticket Hwy, East Falmouth MA 2536",
+      "42 Fairhaven Commons Way, Fairhaven MA 2719"
+    ],
+    "role": "user"
+  },
+  {
+    "name": "John",
+    "surname": "Walsh",
+    "email": "johnwalsh@app.com",
+    "password": "JohnWalsh1",
+    "address": [
+      "374 William S Canning Blvd, Fall River MA 2721",
+      "121 Worcester Rd, Framingham MA 1701"
+    ],
+    "role": "admin"
+  },
+  {
+    "name": "Jane",
+    "surname": "Walsh",
+    "email": "janewalsh@app.com",
+    "password": "JaneWalsh1",
+    "address": [
+      "777 Brockton Avenue, Abington MA 2351",
+      "121 Worcester Rd, Framingham MA 1701"
+    ],
+    "role": "admin"
+  },
+  {
+    "name": "Jaime",
+    "surname": "Lannister",
+    "email": "jaimelannister@app.com",
+    "password": "Lannister1",
+    "address": [
+      "137 Teaticket Hwy, East Falmouth MA 2536",
+      "42 Fairhaven Commons Way, Fairhaven MA 2719"
+    ],
+    "role": "publisher"
+  }
+]
