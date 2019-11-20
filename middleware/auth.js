@@ -50,3 +50,18 @@ exports.loginRequired = async (req, res, next) => {
     next(new ErrorResponse("Please log in to access this service", 401));
   }
 };
+
+// role based authorization
+exports.roleAuthorized = (...roles) => {
+  return async (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ErrorResponse(
+          `User role '${req.user.role}' is not authorized to access this route`,
+          403
+        )
+      );
+    }
+    next();
+  };
+};

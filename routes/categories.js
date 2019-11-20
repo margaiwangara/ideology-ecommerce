@@ -13,7 +13,7 @@ const {
 // middleware
 const Category = require("../models/category");
 const advancedResults = require("../middleware/advancedResults");
-const { userAuthorized } = require("../middleware/auth");
+const { userAuthorized, roleAuthorized } = require("../middleware/auth");
 
 router
   .route("/")
@@ -21,12 +21,12 @@ router
     advancedResults(Category, { path: "products", select: "name description" }),
     getCategories
   )
-  .post(userAuthorized, createCategory);
+  .post(userAuthorized, roleAuthorized("admin"), createCategory);
 
 router
   .route("/:id")
   .get(getCategory)
-  .put(userAuthorized, updateCategory)
-  .delete(userAuthorized, deleteCategory);
+  .put(userAuthorized, roleAuthorized("admin"), updateCategory)
+  .delete(userAuthorized, roleAuthorized("user"), deleteCategory);
 
 module.exports = router;
