@@ -15,6 +15,7 @@ const app = express();
 const fooRoutes = require("./routes/foo");
 const productRoutes = require("./routes/products");
 const categoryRoutes = require("./routes/categories");
+const authRoutes = require("./routes/auth");
 
 // invoke middlewares
 app.use(cors());
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/foo", fooRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/auth", authRoutes);
 
 // Error Handler
 app.use(function(req, res, next) {

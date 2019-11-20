@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: [true, "Email already exists"],
+      unique: true,
       maxlength: [100, "Maximum email length is 100 characters"],
       required: [true, "Email field is required"],
       match: [
@@ -51,6 +51,12 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// password hash middleware
+userSchema.pre("save", async function(next) {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
 const User = mongoose.model("Users", userSchema);
 
 module.exports = User;
