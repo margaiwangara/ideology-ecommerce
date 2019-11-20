@@ -3,9 +3,19 @@ const express = require("express");
 // router
 const router = express.Router({ mergeParams: true });
 
-const { registerUser, loginUser } = require("../controllers/auth");
+// middleware
+const { userAuthorized } = require("../middleware/auth");
 
-router.route("/register").post(registerUser);
-router.route("/login").post(loginUser);
+// auth methods
+const {
+  registerUser,
+  loginUser,
+  getCurrentLoggedInUser
+} = require("../controllers/auth");
+
+// currently logged in user
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.get("/account", userAuthorized, getCurrentLoggedInUser);
 
 module.exports = router;

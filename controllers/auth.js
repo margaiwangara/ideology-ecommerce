@@ -77,3 +77,17 @@ const getTokenResponse = (user, statusCode, res) => {
     .cookie("token", token, options)
     .json({ success: true, token });
 };
+
+// get currently logged in user
+exports.getCurrentLoggedInUser = async (req, res, next) => {
+  try {
+    const user = await db.User.findById(req.user._id);
+
+    return res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    next(new ErrorResponse("Unauthorized Access", 401));
+  }
+};

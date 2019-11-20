@@ -14,18 +14,19 @@ const {
 // middleware files
 const Product = require("../models/product");
 const advancedResults = require("../middleware/advancedResults");
+const { userAuthorized } = require("../middleware/auth");
 
 router
   .route("/")
   .get(advancedResults(Product, "categories"), getProducts)
-  .post(createProduct);
+  .post(userAuthorized, createProduct);
 
 router
   .route("/:id")
   .get(getProduct)
-  .put(updateProduct)
-  .delete(deleteProduct);
+  .put(userAuthorized, updateProduct)
+  .delete(userAuthorized, deleteProduct);
 
-router.route("/:id/image").put(uploadProductImage);
+router.route("/:id/image").put(userAuthorized, uploadProductImage);
 
 module.exports = router;
