@@ -13,7 +13,6 @@ dotenv.config({ path: "./config/config.env" });
 const app = express();
 
 // api route files
-const fooRoutes = require("./routes/foo");
 const productRoutes = require("./routes/products");
 const categoryRoutes = require("./routes/categories");
 const authRoutes = require("./routes/auth");
@@ -28,7 +27,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // api routes
-app.use("/api/foo", fooRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
