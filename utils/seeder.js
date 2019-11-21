@@ -33,20 +33,14 @@ const seedProductsCollection = async () => {
       userFile = `${__dirname}/../_data/users.json`;
 
     //  data acquisition
-    const productData = fs.readFileSync(productFile, {
-      encoding: "utf-8"
-    });
-    const categoryData = fs.readFileSync(categoryFile, {
-      encoding: "utf-8"
-    });
-    const userData = fs.readFileSync(userFile, {
-      encoding: "utf-8"
-    });
+    const productData = fs.readFileSync(productFile, "utf-8");
+    const categoryData = fs.readFileSync(categoryFile, "utf-8");
+    const userData = fs.readFileSync(userFile, "utf-8");
 
     // Database input
+    await Users.create(JSON.parse(userData));
     await Categories.create(JSON.parse(categoryData));
     await Products.create(JSON.parse(productData));
-    await Users.create(JSON.parse(userData));
 
     console.log("Resource seeded successfully".green.inverse);
     process.exit();

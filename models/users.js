@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
@@ -45,7 +46,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "User role is required"]
     },
     resetPasswordToken: String,
-    resetPasswordExpire: String
+    resetPasswordExpire: Date
   },
   {
     timestamps: true
@@ -54,6 +55,9 @@ const userSchema = new mongoose.Schema(
 
 // password hash middleware
 userSchema.pre("save", async function(next) {
+  if (!this.isModified("password")) {
+    next();
+  }
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -81,6 +85,23 @@ userSchema.methods.comparePassword = async function(inputPassword, next) {
   } catch (error) {
     return next(error);
   }
+};
+
+// Generate reset password token
+userSchema.methods.generateResetPasswordToken = function() {
+  // create token
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  // hash token
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // set expiration date
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; //10 minutes expiration
+
+  return resetToken;
 };
 
 const User = mongoose.model("Users", userSchema);
