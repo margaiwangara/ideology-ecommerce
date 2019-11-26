@@ -1,38 +1,33 @@
 const advancedResults = (model, populate) => async (req, res, next) => {
   try {
     let query;
-
-    // make copy of req.query
+    // copy req.query
     const reqQuery = { ...req.query };
 
-    // Fields to exclude
-    const removeFields = ["select", "filter", "sort", "page", "limit"];
-
-    // loop over remove fields and delete from reqQuery
+    console.log(reqQuery);
+    // remove fields
+    const removeFields = ["filter", "select", "sort", "page", "limit"];
     removeFields.forEach(param => delete reqQuery[param]);
 
+    // convert query to string
     let queryStr = JSON.stringify(reqQuery);
 
-    // price handling
+    // attach for quering
     queryStr = queryStr.replace(
-      /\b(gt|lt|gte|lte|in)\b/g,
+      /\b(gt|gte|lt|lte|in)\b/g,
       match => `$${match}`
     );
-    // replace rating to average rating
-    queryStr = queryStr.replace("rating", "averageRating");
 
-    // handling filters
-    //filter=color:red,green;size:s,xs; displays products that have red and green color and also s and xs size
     // run query
     query = model.find(JSON.parse(queryStr));
 
-    // check if select exists and select input fields
+    // select query
     if (req.query.select) {
       const fields = req.query.select.split(",").join(" ");
       query = query.select(fields);
     }
 
-    // sorting
+    // sort
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
@@ -40,15 +35,9 @@ const advancedResults = (model, populate) => async (req, res, next) => {
       query = query.sort("-createdAt");
     }
 
-    // filtering
-    if (req.query.filter) {
-      // initial split color:red,green;size:s,xs;
-      const firstSplit = req.query.filter.split(";");
-    }
-
     // pagination
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 2;
+    const limit = parseInt(req.query.limit, 10) || 10;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const total = await model.countDocuments();
@@ -56,15 +45,16 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     // pagination query
     query = query.skip(startIndex).limit(limit);
 
+    // check if populate exists
     if (populate) {
       query = query.populate(populate);
     }
 
     // get all results
-    const results = await query;
+    results = await query;
 
-    // pagination
-    const pagination = {};
+    // pagination links
+    pagination = {};
 
     if (endIndex < total) {
       pagination.next = {

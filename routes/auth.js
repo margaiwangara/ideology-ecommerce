@@ -6,20 +6,34 @@ const router = express.Router({ mergeParams: true });
 // middleware
 const { userAuthorized } = require("../middleware/auth");
 
-// auth methods
+// controller methods
 const {
   registerUser,
   loginUser,
-  getCurrentLoggedInUser,
+  getCurrentlyLoggedInUser,
+  editLoggedInUserDetails,
+  updateLoggedInUserProfileImage,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  updatePassword,
+  confirmEmail,
+  logoutUser
 } = require("../controllers/auth");
 
-// currently logged in user
+// routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/account", userAuthorized, getCurrentLoggedInUser);
+router.get("/logout", logoutUser);
 router.post("/forgotpassword", forgotPassword);
-router.put("/resetpassword", resetPassword);
+router.post("/resetpassword", resetPassword);
+router.get("/confirmemail", confirmEmail);
+router.get("/account", userAuthorized, getCurrentlyLoggedInUser);
+router.put("/account/edit/password", userAuthorized, updatePassword);
+router.put("/account/edit", userAuthorized, editLoggedInUserDetails);
+router.put(
+  "/account/edit/profile",
+  userAuthorized,
+  updateLoggedInUserProfileImage
+);
 
 module.exports = router;

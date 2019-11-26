@@ -8,25 +8,25 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Name field is required"],
-      maxlength: [100, "Maximum name length is 100 characters"]
+      maxlength: [255, "You have exceeded the maximum name length[255]"]
     },
     surname: {
       type: String,
-      maxlength: [100, "Maximum surname length is 100 characters"]
+      maxlength: [255, "You have exceeded the maximum surname length[255]"]
     },
     email: {
       type: String,
       unique: true,
-      maxlength: [100, "Maximum email length is 100 characters"],
       required: [true, "Email field is required"],
       match: [
-        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/,
         "Please enter a valid email"
-      ]
+      ],
+      maxlength: [100, "You have exceeded the maximum email length[100]"]
     },
     password: {
       type: String,
-      minlength: [6, "Minimum password length is 6 characters"],
+      minlength: [6, "Password length should be at least 6 characters"],
       match: [
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
         "Please enter a valid password, at least one lowercase and uppercase letter and one number"
@@ -34,74 +34,116 @@ const userSchema = new mongoose.Schema(
       select: false,
       required: [true, "Password field is required"]
     },
-    address: [
-      {
-        type: String
-      }
-    ],
     role: {
       type: String,
-      enum: ["user", "publisher", "admin"],
+      enum: ["user", "admin"],
       default: "user",
-      required: [true, "User role is required"]
+      required: [true, "Role field is required"]
+    },
+    profileImage: {
+      type: String,
+      default: "no-image.jpg",
+      maxlength: [255, "You have exceeded the image name length[255]"]
     },
     resetPasswordToken: String,
-    resetPasswordExpire: Date
+    passwordTokenExpire: Date,
+    confirmEmailToken: String,
+    isEmailConfirmed: {
+      type: Boolean,
+      default: false
+    }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+      }
+    },
+    toObject: {
+      virtuals: true
+    }
   }
 );
 
-// password hash middleware
+// Password Encryption
 userSchema.pre("save", async function(next) {
   if (!this.isModified("password")) {
     next();
   }
   try {
+    // generate salt
     const salt = await bcrypt.genSalt(10);
+
+    // set password to hashed password
     this.password = await bcrypt.hash(this.password, salt);
+
     next();
   } catch (error) {
     next(error);
   }
 });
 
-// JSON Web Tokens
-userSchema.methods.generateJSONWebToken = function(next) {
+// virtuals for populate
+userSchema.virtual("posts", {
+  ref: "Posts",
+  localField: "_id",
+  foreignField: "user",
+  justOne: false
+});
+
+// Confirm Password Match
+userSchema.methods.comparePassword = async function(candidatePassword, next) {
   try {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRE
-    });
+    // confirm password
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+
+    return isMatch;
   } catch (error) {
     next(error);
   }
 };
 
-// password confirmation
-userSchema.methods.comparePassword = async function(inputPassword, next) {
-  try {
-    return await bcrypt.compare(inputPassword, this.password);
-  } catch (error) {
-    return next(error);
-  }
-};
-
-// Generate reset password token
-userSchema.methods.generateResetPasswordToken = function() {
-  // create token
+// Password Reset Token
+userSchema.methods.generatePasswordResetToken = function(next) {
   const resetToken = crypto.randomBytes(20).toString("hex");
 
-  // hash token
   this.resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
 
-  // set expiration date
-  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; //10 minutes expiration
+  this.passwordTokenExpire = Date.now() + 10 * 60 * 1000; // 10 minutes expire
 
   return resetToken;
+};
+
+// Generate email confirm token
+userSchema.methods.generateEmailConfirmToken = function(next) {
+  // email confirmation token
+  const confirmationToken = crypto.randomBytes(20).toString("hex");
+
+  this.confirmEmailToken = crypto
+    .createHash("sha256")
+    .update(confirmationToken)
+    .digest("hex");
+
+  return confirmationToken;
+};
+// Get JSON Web Token
+userSchema.methods.generateJSONWebToken = function(next) {
+  try {
+    const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRE
+    });
+
+    return token;
+  } catch (error) {
+    next(error);
+  }
 };
 
 const User = mongoose.model("Users", userSchema);

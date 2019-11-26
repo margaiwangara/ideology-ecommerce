@@ -41,7 +41,7 @@
       "777 Brockton Avenue, Abington MA 2351",
       "121 Worcester Rd, Framingham MA 1701"
     ],
-    "role": "admin"
+    "role": "user"
   },
   {
     "name": "Jaime",
@@ -52,6 +52,6 @@
       "137 Teaticket Hwy, East Falmouth MA 2536",
       "42 Fairhaven Commons Way, Fairhaven MA 2719"
     ],
-    "role": "publisher"
+    "role": "user"
   }
 ]

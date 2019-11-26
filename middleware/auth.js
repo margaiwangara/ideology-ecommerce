@@ -4,64 +4,49 @@ const User = require("../models/users");
 
 exports.userAuthorized = async (req, res, next) => {
   try {
-    let token, header;
-    header = req.headers.authorization;
+    let token, headers;
 
-    // check if token exists and starts with Bearer
-    if (header && header.startsWith("Bearer")) token = header.split(" ")[1];
-    // else if (req.cookies.token) token = req.cookies.token;
+    headers = req.headers.authorization;
+    // check if token exists and starts with bearer
+    if (headers && headers.startsWith("Bearer")) token = headers.split(" ")[1];
+    // else if cookie has token store in it grab that token
+    else if (req.cookies.token) token = req.cookies.token;
 
-    // check token variable
+    // check token
     if (!token) return next(new ErrorResponse("Unauthorized Access", 401));
 
     // verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // get user by id from decoded
+    // get user by id and store in req
     req.user = await User.findById(decoded.id);
 
     next();
   } catch (error) {
-    return next(new ErrorResponse("Unauthorized Access", 401));
+    next(error);
   }
 };
 
-// login required
-exports.loginRequired = async (req, res, next) => {
+exports.roleAuthorized = (...roles) => async (req, res, next) => {
   try {
-    let token, header;
-    header = req.headers.authorization;
+    // get user
+    const user = await User.findById(req.user.id);
 
-    // check if token exists and starts with Bearer
-    if (header && header.startsWith("Bearer")) token = header.split(" ")[1];
-    // else if (req.cookies.token) token = req.cookies.token;
-
-    if (!token) {
-      return next(
-        new ErrorResponse("Please log in to access this service", 401)
-      );
+    if (!user) {
+      return next(new ErrorResponse("User not found!", 404));
     }
 
-    // verify token
-    await jwt.verify(token, process.env.JWT_SECRET);
-
-    next();
-  } catch (error) {
-    next(new ErrorResponse("Please log in to access this service", 401));
-  }
-};
-
-// role based authorization
-exports.roleAuthorized = (...roles) => {
-  return async (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(user.role)) {
       return next(
         new ErrorResponse(
-          `User role '${req.user.role}' is not authorized to access this route`,
+          `User role '${user.role}' is not allowed to access this route`,
           403
         )
       );
     }
+
     next();
-  };
+  } catch (error) {
+    next(error);
+  }
 };
