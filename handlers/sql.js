@@ -45,9 +45,18 @@ function findByIdAndUpdate(id, data, table, connection) {
       /("name"|"description"|"price"|"poster")/g,
       value => value.slice(1, -1)
     );
-    console.log(`Final: ${split2}`);
     connection.query(
       `UPDATE ${table} SET ${split2} WHERE id=${id}`,
+      promiseHandler(resolve, reject)
+    );
+  });
+}
+
+// delete item by id
+function findByIdAndDelete(id, table, connection) {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `DELETE FROM ${table} WHERE id=${id}`,
       promiseHandler(resolve, reject)
     );
   });
@@ -63,3 +72,4 @@ module.exports.findById = findById;
 module.exports.find = find;
 module.exports.create = create;
 module.exports.findByIdAndUpdate = findByIdAndUpdate;
+module.exports.findByIdAndDelete = findByIdAndDelete;

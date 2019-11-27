@@ -94,7 +94,6 @@ exports.updateProduct = async (req, res, next) => {
     );
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -106,7 +105,11 @@ exports.updateProduct = async (req, res, next) => {
  */
 exports.deleteProduct = async (req, res, next) => {
   try {
-    await db.Product.findByIdAndDelete(req.params.id);
+    await sql.findByIdAndDelete(
+      parseInt(req.params.id),
+      "products",
+      sqlConnection
+    );
 
     return res.status(200).json({
       success: true
