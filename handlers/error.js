@@ -23,7 +23,18 @@ function errorHandler(error, request, response, next) {
     err = new ErrorResponse(message, 400);
   }
 
-  console.log(err);
+  // SQL Errors
+  switch (err.errno) {
+    case 1146:
+    case 1064:
+      // for developer only
+      console.log(err.sqlMessage);
+      break;
+    default:
+      break;
+  }
+
+  // console.log(err);
   return response.status(err.status || 500).json({
     error: {
       message: err.message || "Oops! Something went wrong"

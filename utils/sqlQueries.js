@@ -1,0 +1,14 @@
+const createProductTable = `CREATE TABLE IF NOT EXISTS products (
+  id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
+  name VARCHAR(255) NOT NULL UNIQUE, 
+  description TEXT NOT NULL,
+  slug VARCHAR(255),
+  poster VARCHAR(255) DEFAULT 'no-image.jpg',
+  price DECIMAL(8, 2) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  )`;
+
+module.exports = {
+  createProductTable
+};

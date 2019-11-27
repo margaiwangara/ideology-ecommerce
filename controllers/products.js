@@ -1,6 +1,8 @@
 const path = require("path");
 const ErrorResponse = require("../utils/ErrorResponse");
 const db = require("../models");
+const sql = require("../handlers/sql");
+const sqlConnection = require("../models").sqlConnection;
 
 /**
  * @desc    Get All Products
@@ -9,7 +11,13 @@ const db = require("../models");
  */
 exports.getProducts = async (req, res, next) => {
   try {
-    return res.status(200).json(res.advancedResults);
+    const products = await sql.find("products", sqlConnection);
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      data: products
+    });
   } catch (error) {
     next(error);
   }
@@ -22,9 +30,13 @@ exports.getProducts = async (req, res, next) => {
  */
 exports.getProduct = async (req, res, next) => {
   try {
-    const product = await db.Product.findById(req.params.id);
+    const product = await sql.findById(
+      req.params.id,
+      "products",
+      sqlConnection
+    );
     // if product exists
-    if (!product) {
+    if (product.length === 0) {
       next(new ErrorResponse("Resource Not Found", 404));
     }
 
@@ -41,10 +53,14 @@ exports.getProduct = async (req, res, next) => {
  */
 exports.createProduct = async (req, res, next) => {
   try {
-    const newProduct = await db.Product.create(req.body);
+    const newProduct = await sql.create(req.body, "products", sqlConnection);
 
-    return res.status(201).json(newProduct);
+    return res.status(201).json({
+      success: true,
+      data: { ...req.body, id: newProduct.insertId }
+    });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

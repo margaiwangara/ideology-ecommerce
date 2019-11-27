@@ -19,7 +19,7 @@ const { userAuthorized, roleAuthorized } = require("../middleware/auth");
 router
   .route("/")
   .get(advancedResults(Product, "categories"), getProducts)
-  .post(userAuthorized, roleAuthorized("admin"), createProduct);
+  .post(userAuthorized, roleAuthorized("user"), createProduct);
 
 router
   .route("/:id")
