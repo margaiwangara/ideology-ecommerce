@@ -24,8 +24,8 @@ router
 router
   .route("/:id")
   .get(getProduct)
-  .put(userAuthorized, roleAuthorized("admin"), updateProduct)
-  .delete(userAuthorized, roleAuthorized("admin"), deleteProduct);
+  .put(userAuthorized, roleAuthorized("user"), updateProduct)
+  .delete(userAuthorized, roleAuthorized("user"), deleteProduct);
 
 router
   .route("/:id/image")

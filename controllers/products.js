@@ -71,7 +71,7 @@ exports.createProduct = async (req, res, next) => {
     console.log(req.body);
     return res.status(201).json({
       success: true,
-      data: { ...req.body, id: newProduct.insertId }
+      id: newProduct.insertId
     });
   } catch (error) {
     console.log(error);
@@ -86,16 +86,15 @@ exports.createProduct = async (req, res, next) => {
  */
 exports.updateProduct = async (req, res, next) => {
   try {
-    const updatedProduct = await db.Product.findOneAndUpdate(
-      { _id: req.params.id },
+    const updatedProduct = await sql.findByIdAndUpdate(
+      parseInt(req.params.id, 10),
       req.body,
-      {
-        new: true,
-        runValidators: true
-      }
+      "products",
+      sqlConnection
     );
-    return res.status(200).json(updatedProduct);
+    return res.status(200).json({ success: true });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
