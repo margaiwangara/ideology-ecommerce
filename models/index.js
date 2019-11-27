@@ -47,13 +47,18 @@ connection.connect(err => {
 });
 
 // SQL Create Tables
-connection.query(productsTable, (error, results) => {
-  if (error) {
-    console.log(error.sqlMessage);
-    return;
-  }
-  console.log("Products table created".green.inverse);
-});
+const createTable = (query, table) =>
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.log(error.sqlMessage);
+      return;
+    }
+    console.log(`${table.toUpperCase()} table created`.green.underline);
+  });
+// Tables
+createTable(productsTable, "products");
+createTable(attributesTable, "attributes");
+createTable(productAttributesTable, "product attributes");
 
 module.exports.Product = require("./product");
 module.exports.Category = require("./category");
