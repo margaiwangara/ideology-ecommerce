@@ -68,8 +68,8 @@ const promiseHandler = (resolve, reject) => (error, results) => {
   resolve(results);
 };
 
-module.exports.findById = findById;
 module.exports.find = find;
+module.exports.findById = findById;
 module.exports.create = create;
 module.exports.findByIdAndUpdate = findByIdAndUpdate;
 module.exports.findByIdAndDelete = findByIdAndDelete;

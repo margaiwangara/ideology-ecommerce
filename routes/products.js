@@ -29,6 +29,6 @@ router
 
 router
   .route("/:id/image")
-  .put(userAuthorized, roleAuthorized("admin"), uploadProductImage);
+  .put(userAuthorized, roleAuthorized("user"), uploadProductImage);
 
 module.exports = router;

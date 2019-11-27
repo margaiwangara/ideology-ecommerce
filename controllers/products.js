@@ -40,7 +40,7 @@ exports.getProduct = async (req, res, next) => {
       next(new ErrorResponse("Resource Not Found", 404));
     }
 
-    return res.status(200).json(product);
+    return res.status(200).json(...product);
   } catch (error) {
     next(error);
   }
@@ -126,9 +126,13 @@ exports.deleteProduct = async (req, res, next) => {
  */
 exports.uploadProductImage = async (req, res, next) => {
   try {
-    const product = await db.Product.findOne({ _id: req.params.id });
+    const product = await sql.findById(
+      req.params.id,
+      "products",
+      sqlConnection
+    );
 
-    if (!product) {
+    if (product.length === 0) {
       return next(new ErrorResponse(`Resource Not Found`, 404));
     }
 
@@ -157,8 +161,11 @@ exports.uploadProductImage = async (req, res, next) => {
       );
     }
 
+    // filename
+    let filename;
+
     // move file
-    file.name = `product_${product._id}${path.parse(file.name).ext}`;
+    file.name = `product_${product[0].id}${path.parse(file.name).ext}`;
     file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
       try {
         if (err) {
@@ -166,13 +173,21 @@ exports.uploadProductImage = async (req, res, next) => {
           return next(new ErrorResponse(`File failed to upload`, 500));
         }
 
-        await db.Product.findByIdAndUpdate(product.id, {
-          mainImage: file.name
-        });
+        // store name of file
+        filename = file.name;
+        return filename;
       } catch (error) {
         return next(error);
       }
     });
+
+    // update db
+    await sql.findByIdAndUpdate(
+      product[0].id,
+      { poster: file.name },
+      "products",
+      sqlConnection
+    );
 
     return res.status(200).json({
       success: true,
