@@ -1,8 +1,8 @@
 const path = require("path");
 const ErrorResponse = require("../utils/ErrorResponse");
-const db = require("../models");
 const sql = require("../handlers/sql");
 const sqlConnection = require("../models").sqlConnection;
+const slugify = require("slugify");
 
 /**
  * @desc    Get All Products
@@ -66,6 +66,11 @@ exports.createProduct = async (req, res, next) => {
       return next(new ErrorResponse(message, 400));
     }
 
+    // slugify
+    req.body.name = req.body.name.replace(/[;\/:*?""<>|&.,']/g, "");
+    req.body.slug = slugify(req.body.name, { lower: true });
+
+    // create new product
     const newProduct = await sql.create(req.body, "products", sqlConnection);
 
     console.log(req.body);
