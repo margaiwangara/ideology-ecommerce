@@ -1,72 +1,58 @@
-const mysql = require("mysql");
-
 // Find All
 function find(table, connection) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      `SELECT * FROM ${table} ORDER BY id ASC`,
-      promiseHandler(resolve, reject)
-    );
-  });
+  const query = `SELECT * FROM ${table} ORDER BY id ASC`;
+
+  return promiseHandler(query, connection);
 }
 
 // Find By Id
 function findById(id, table, connection) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      `SELECT * FROM ${table} WHERE id=${id}`,
-      promiseHandler(resolve, reject)
-    );
-  });
+  const query = `SELECT * FROM ${table} WHERE id=${id}`;
+  return promiseHandler(query, connection);
 }
 
 // create new item
 function create(data, table, connection) {
-  return new Promise((resolve, reject) => {
-    let keys = Object.keys(data).join(",");
-    let values = JSON.stringify(Object.values(data)).replace(/\[|\]/g, "");
-    connection.query(
-      `INSERT INTO ${table} (${keys}) VALUES (${values})`,
-      promiseHandler(resolve, reject)
-    );
-  });
+  let keys = Object.keys(data).join(",");
+  let values = JSON.stringify(Object.values(data)).replace(/\[|\]/g, "");
+
+  const query = `INSERT INTO ${table} (${keys}) VALUES (${values})`;
+
+  return promiseHandler(query, connection);
 }
 
 // update existing item
 function findByIdAndUpdate(id, data, table, connection) {
-  return new Promise((resolve, reject) => {
-    // stringify input
-    let split1 = JSON.stringify(data)
-      .split(":")
-      .join("=")
-      .replace(/{|}/g, "");
-    // remove quotes from part of the string
-    let split2 = split1.replace(
-      /("name"|"description"|"price"|"poster")/g,
-      value => value.slice(1, -1)
-    );
-    connection.query(
-      `UPDATE ${table} SET ${split2} WHERE id=${id}`,
-      promiseHandler(resolve, reject)
-    );
-  });
+  // stringify input
+  let split1 = JSON.stringify(data)
+    .split(":")
+    .join("=")
+    .replace(/{|}/g, "");
+  // remove quotes from part of the string
+  let split2 = split1.replace(
+    /("name"|"description"|"price"|"poster")/g,
+    value => value.slice(1, -1)
+  );
+  const query = `UPDATE ${table} SET ${split2} WHERE id=${id}`;
+  return promiseHandler(query, connection);
 }
 
 // delete item by id
 function findByIdAndDelete(id, table, connection) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      `DELETE FROM ${table} WHERE id=${id}`,
-      promiseHandler(resolve, reject)
-    );
-  });
+  const query = `DELETE FROM ${table} WHERE id=${id}`;
+  return promiseHandler(query, connection);
 }
 
+// joins
+
 // promise handler
-const promiseHandler = (resolve, reject) => (error, results) => {
-  if (error) reject(error);
-  resolve(results);
-};
+const promiseHandler = (query, connection) =>
+  new Promise((resolve, reject) => {
+    connection.query(query, (error, results) => {
+      if (error) reject(error);
+      resolve(results);
+    });
+  });
 
 module.exports.find = find;
 module.exports.findById = findById;
