@@ -3,7 +3,11 @@ const mysql = require("mysql");
 const colors = require("colors");
 
 // get sql queries
-const { createProductTable } = require("../utils/sqlQueries");
+const {
+  productsTable,
+  attributesTable,
+  productAttributesTable
+} = require("../utils/sqlQueries");
 
 /**
  * MongoDB Connection
@@ -43,7 +47,7 @@ connection.connect(err => {
 });
 
 // SQL Create Tables
-connection.query(createProductTable, (error, results) => {
+connection.query(productsTable, (error, results) => {
   if (error) {
     console.log(error.sqlMessage);
     return;
