@@ -30,6 +30,9 @@ function errorHandler(error, request, response, next) {
       // for developer only
       console.log(err.sqlMessage);
       break;
+    case 1062:
+      message = err.sqlMessage;
+      err = new ErrorResponse(message, 400);
     default:
       break;
   }

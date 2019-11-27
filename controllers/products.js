@@ -53,8 +53,22 @@ exports.getProduct = async (req, res, next) => {
  */
 exports.createProduct = async (req, res, next) => {
   try {
+    let message = [];
+    const { name, description, price } = req.body;
+
+    // validation for empty input
+    !name && message.push("Name field is required");
+    !description && message.push("Description field is required");
+    !price && message.push("Price field is required");
+
+    // throw error
+    if (message.length > 0) {
+      return next(new ErrorResponse(message, 400));
+    }
+
     const newProduct = await sql.create(req.body, "products", sqlConnection);
 
+    console.log(req.body);
     return res.status(201).json({
       success: true,
       data: { ...req.body, id: newProduct.insertId }
