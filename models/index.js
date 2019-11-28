@@ -63,4 +63,5 @@ createTable(productAttributesTable, "product attributes");
 module.exports.Product = require("./product");
 module.exports.Category = require("./category");
 module.exports.User = require("./users");
+module.exports.Attribute = require("./attributes");
 module.exports.sqlConnection = connection;
