@@ -34,7 +34,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
       query = query.sort("-createdAt");
     }
 
-    // color
+    // filtering
     if (req.query.filter) {
       // new approach split then create object
       const filterBy = req.query.filter.split(/[;:]/g);

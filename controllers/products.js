@@ -25,17 +25,13 @@ exports.getProducts = async (req, res, next) => {
  */
 exports.getProduct = async (req, res, next) => {
   try {
-    const product = await sql.findById(
-      req.params.id,
-      "products",
-      sqlConnection
-    );
+    const product = await db.Product.findById(req.params.id);
     // if product exists
-    if (product.length === 0) {
+    if (!product) {
       next(new ErrorResponse("Resource Not Found", 404));
     }
 
-    return res.status(200).json(...product);
+    return res.status(200).json(product);
   } catch (error) {
     next(error);
   }
@@ -48,31 +44,10 @@ exports.getProduct = async (req, res, next) => {
  */
 exports.createProduct = async (req, res, next) => {
   try {
-    let message = [];
-    const { name, description, price } = req.body;
-
-    // validation for empty input
-    !name && message.push("Name field is required");
-    !description && message.push("Description field is required");
-    !price && message.push("Price field is required");
-
-    // throw error
-    if (message.length > 0) {
-      return next(new ErrorResponse(message, 400));
-    }
-
-    // slugify
-    req.body.name = req.body.name.replace(/[;\/:*?""<>|&.,']/g, "");
-    req.body.slug = slugify(req.body.name, { lower: true });
-
     // create new product
-    const newProduct = await sql.create(req.body, "products", sqlConnection);
+    const newProduct = await db.Product.create(req.body);
 
-    console.log(req.body);
-    return res.status(201).json({
-      success: true,
-      id: newProduct.insertId
-    });
+    return res.status(201).json(newProduct);
   } catch (error) {
     console.log(error);
     next(error);
@@ -86,13 +61,15 @@ exports.createProduct = async (req, res, next) => {
  */
 exports.updateProduct = async (req, res, next) => {
   try {
-    const updatedProduct = await sql.findByIdAndUpdate(
-      parseInt(req.params.id, 10),
+    const updatedProduct = await db.Product.findByIdAndUpdate(
+      req.params.id,
       req.body,
-      "products",
-      sqlConnection
+      {
+        new: true,
+        runValidators: false
+      }
     );
-    return res.status(200).json({ success: true });
+    return res.status(200).json(updatedProduct);
   } catch (error) {
     next(error);
   }
@@ -105,12 +82,7 @@ exports.updateProduct = async (req, res, next) => {
  */
 exports.deleteProduct = async (req, res, next) => {
   try {
-    await sql.findByIdAndDelete(
-      parseInt(req.params.id),
-      "products",
-      sqlConnection
-    );
-
+    await db.Product.findByIdAndDelete(req.params.id);
     return res.status(200).json({
       success: true
     });
@@ -126,13 +98,9 @@ exports.deleteProduct = async (req, res, next) => {
  */
 exports.uploadProductImage = async (req, res, next) => {
   try {
-    const product = await sql.findById(
-      req.params.id,
-      "products",
-      sqlConnection
-    );
+    const product = await db.Product.findById(req.params.id);
 
-    if (product.length === 0) {
+    if (!product) {
       return next(new ErrorResponse(`Resource Not Found`, 404));
     }
 
@@ -161,11 +129,8 @@ exports.uploadProductImage = async (req, res, next) => {
       );
     }
 
-    // filename
-    let filename;
-
     // move file
-    file.name = `product_${product[0].id}${path.parse(file.name).ext}`;
+    file.name = `product_${product._id}${path.parse(file.name).ext}`;
     file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
       try {
         if (err) {
@@ -173,21 +138,14 @@ exports.uploadProductImage = async (req, res, next) => {
           return next(new ErrorResponse(`File failed to upload`, 500));
         }
 
-        // store name of file
-        filename = file.name;
-        return filename;
+        // store name in db
+        await db.Product.findByIdAndUpdate(product.id, {
+          thumbnail: file.name
+        });
       } catch (error) {
         return next(error);
       }
     });
-
-    // update db
-    await sql.findByIdAndUpdate(
-      product[0].id,
-      { poster: file.name },
-      "products",
-      sqlConnection
-    );
 
     return res.status(200).json({
       success: true,
