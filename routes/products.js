@@ -19,16 +19,16 @@ const { userAuthorized, roleAuthorized } = require("../middleware/auth");
 router
   .route("/")
   .get(advancedResults(Product, "categories"), getProducts)
-  .post(userAuthorized, roleAuthorized("user"), createProduct);
+  .post(userAuthorized, roleAuthorized("admin"), createProduct);
 
 router
   .route("/:id")
   .get(getProduct)
-  .put(userAuthorized, roleAuthorized("user"), updateProduct)
-  .delete(userAuthorized, roleAuthorized("user"), deleteProduct);
+  .put(userAuthorized, roleAuthorized("admin"), updateProduct)
+  .delete(userAuthorized, roleAuthorized("admin"), deleteProduct);
 
 router
   .route("/:id/image")
-  .put(userAuthorized, roleAuthorized("user"), uploadProductImage);
+  .put(userAuthorized, roleAuthorized("admin"), uploadProductImage);
 
 module.exports = router;
