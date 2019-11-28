@@ -25,7 +25,7 @@ const Products = require("../models/product");
 const Categories = require("../models/category");
 const Users = require("../models/users");
 
-const seedProductsCollection = async () => {
+const seedCollection = async () => {
   try {
     // file routes
     let productFile = `${__dirname}/../_data/products.json`,
@@ -49,7 +49,7 @@ const seedProductsCollection = async () => {
   }
 };
 
-const deleteProductsFromCollection = async () => {
+const deleteFromCollection = async () => {
   try {
     //deletion from database
     await Products.deleteMany();
@@ -63,7 +63,7 @@ const deleteProductsFromCollection = async () => {
   }
 };
 if (process.argv[2] === "-c") {
-  seedProductsCollection();
+  seedCollection();
 } else if (process.argv[2] === "-d") {
-  deleteProductsFromCollection();
+  deleteFromCollection();
 }

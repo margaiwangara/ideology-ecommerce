@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-const uniqid = require("uniquid");
 
 const productSchema = new mongoose.Schema(
   {
@@ -25,37 +24,29 @@ const productSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
       default: "no-image.jpg",
-      maxlength: [255, "Maximum name length[25  5] exceeded"]
+      maxlength: [255, "Maximum file name length[255] exceeded"]
     },
     rating: {
       type: Number,
       max: [5, "Maximum star rating[5] exceeded"]
     },
-    department: {
-      type: String,
-      required: [true, "Department field is required"]
-    },
     category: {
       type: String,
       required: [true, "Category field is required"]
-    }
+    },
+    attributes: []
   },
   {
     timestamps: true
   }
 );
 
-// Middlewares
-productSchema.pre("validate", function(next) {
-  this.sku = uniqid();
-  next();
-});
-
+// Middleware
 productSchema.pre("save", function(next) {
-  let name = this.name;
-  name = name.replace(/[;\/:*?""<>|&.,']/g, "");
+  let title = this.title;
+  title = title.replace(/[;\/:*?""<>|&.,']/g, "");
 
-  this.slug = slugify(name, { lower: true });
+  this.slug = slugify(title, { lower: true });
   next();
 });
 

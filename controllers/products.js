@@ -1,5 +1,6 @@
 const path = require("path");
 const ErrorResponse = require("../utils/ErrorResponse");
+const db = require("../models");
 const sql = require("../handlers/sql");
 const sqlConnection = require("../models").sqlConnection;
 const slugify = require("slugify");
@@ -11,13 +12,7 @@ const slugify = require("slugify");
  */
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await sql.find("products", sqlConnection);
-
-    return res.status(200).json({
-      success: true,
-      count: products.length,
-      data: products
-    });
+    return res.status(200).json(res.advancedResults);
   } catch (error) {
     next(error);
   }
