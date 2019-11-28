@@ -4,7 +4,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     // copy req.query
     const reqQuery = { ...req.query };
 
-    console.log(reqQuery);
     // remove fields
     const removeFields = ["filter", "select", "sort", "page", "limit"];
     removeFields.forEach(param => delete reqQuery[param]);
@@ -34,6 +33,28 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     } else {
       query = query.sort("-createdAt");
     }
+
+    // color
+    if (req.query.filter) {
+      // new approach split then create object
+      const filterBy = req.query.filter.split(/[;:]/g);
+      const filterObj = {};
+
+      // loop
+      for (let i = 0; i < filterBy.length; i++) {
+        if (i == 0 || i % 2 == 0) {
+          let holder = "attributes." + filterBy[i];
+          filterObj[holder] = {
+            $in: filterBy[i + 1].split(",")
+          };
+        }
+      }
+
+      // use generated result to run query
+      query = query.find(filterObj);
+    }
+
+    // console.log(`Query String: ${queryStr}`);
 
     // pagination
     const page = parseInt(req.query.page, 10) || 1;
