@@ -4,17 +4,12 @@ const uniqid = require("uniquid");
 
 const productSchema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
-      unique: [true, "Name field is unique"],
+      unique: [true, "Title field is unique"],
       maxlength: 255,
       trim: true,
-      required: [true, "Name field is required"]
-    },
-    sku: {
-      type: String,
-      required: [true, "SKU field is required"],
-      unique: [true, "SKU field is unique"]
+      required: [true, "Title field is required"]
     },
     slug: String,
     price: {
@@ -27,45 +22,23 @@ const productSchema = new mongoose.Schema(
       required: [true, "Description field is required"],
       trim: true
     },
-    mainImage: {
+    thumbnail: {
       type: String,
       default: "no-image.jpg",
       maxlength: [255, "Maximum name length[25  5] exceeded"]
     },
-    averageRating: {
+    rating: {
       type: Number,
       max: [5, "Maximum star rating[5] exceeded"]
     },
-    attributes: [
-      {
-        color: {
-          type: String,
-          required: [true, "Color field is required"]
-        },
-        size: {
-          short: {
-            type: String,
-            required: [true, "Size.short field is required"]
-          },
-          long: {
-            type: String,
-            required: [true, "Size.long field is required"]
-          }
-        },
-        quantity: {
-          type: Number,
-          min: [0, "Minimum quantity size is 0"],
-          required: [true, "Quantity field is required"]
-        }
-      }
-    ],
-    categories: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Categories",
-        required: [true, "Category id required"]
-      }
-    ]
+    department: {
+      type: String,
+      required: [true, "Department field is required"]
+    },
+    category: {
+      type: String,
+      required: [true, "Category field is required"]
+    }
   },
   {
     timestamps: true

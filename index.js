@@ -42,12 +42,12 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // api routes
 // api route files
+// app.use("/api/categories", categoryRoutes);
+// const categoryRoutes = require("./routes/categories");
 const productRoutes = require("./routes/products");
-const categoryRoutes = require("./routes/categories");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 app.use("/api/products", productRoutes);
-app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/auth/users", userRoutes);
 
