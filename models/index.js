@@ -60,7 +60,10 @@ createTable(productsTable, "products");
 createTable(attributesTable, "attributes");
 createTable(productAttributesTable, "product attributes");
 
-module.exports.Product = require("./product");
-module.exports.Category = require("./category");
 module.exports.User = require("./users");
+module.exports.Category = require("./category");
+module.exports.Product = require("./product");
+module.exports.Cart = require("./cart");
+
+// SQL Connection Export
 module.exports.sqlConnection = connection;
