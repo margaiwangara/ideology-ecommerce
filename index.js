@@ -47,34 +47,12 @@ app.use(express.static(path.join(__dirname, "public")));
 const productRoutes = require("./routes/products");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
-app.use("/api/products", productRoutes);
+const cartRoutes = require("./routes/cart");
 app.use("/api/auth", authRoutes);
 app.use("/api/auth/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
-// sample route
-const db = require("./models");
-app.get("/test", async function(req, res, next) {
-  try {
-    let query;
-    // filter
-    if (req.query.filter) {
-      const filter = req.query.filter;
-
-      //  replace
-      const step1 = filter
-        .replace(/(color:|size:|price:)/gi, value => `${value}{$in: [`)
-        .replace(/;/g, "]};");
-
-      query = db.Product.find(JSON.parse(step1));
-    }
-
-    const data = await query;
-
-    return res.status(200).json(data);
-  } catch (error) {
-    next(error);
-  }
-});
 // Error Handler
 app.use(function(req, res, next) {
   let error = new Error("Not Found");
